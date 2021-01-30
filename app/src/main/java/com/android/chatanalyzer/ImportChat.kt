@@ -11,6 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.navigation.findNavController
 import com.android.chatanalyzer.databinding.FragmentImportChatBinding
 
 class ImportChat : Fragment() {
@@ -51,6 +52,7 @@ class ImportChat : Fragment() {
             binding.importedChatType.visibility = View.GONE
             binding.readAllMessageKeysButton.visibility = View.GONE
             binding.readAllMessageKeysButton.isEnabled = true
+            binding.analyzeChatButton.visibility = View.GONE
         }
 
         binding.readAllMessageKeysButton.setOnClickListener {
@@ -63,6 +65,11 @@ class ImportChat : Fragment() {
             binding.allMessageKeys.text =
                 "%d/%d (%.2f%%)".format(editedMessages, totalMessages, editedMessagesPercentage)
             binding.allMessageKeys.visibility = View.VISIBLE
+        }
+
+        binding.analyzeChatButton.setOnClickListener {
+            val action = ImportChatDirections.actionImportChatToChatStats()
+            binding.root.findNavController().navigate(action)
         }
 
         return view
@@ -138,6 +145,8 @@ class ImportChat : Fragment() {
 
                 binding.importedChatType.text = "Telegram chat"
                 binding.importedChatType.visibility = View.VISIBLE
+
+                binding.analyzeChatButton.visibility = View.VISIBLE
 
                 binding.readAllMessageKeysButton.visibility = View.VISIBLE
             }

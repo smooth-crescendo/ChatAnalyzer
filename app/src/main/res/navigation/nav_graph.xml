@@ -9,5 +9,14 @@
         android:id="@+id/importChat"
         android:name="com.android.chatanalyzer.ImportChat"
         android:label="fragment_import_chat"
-        tools:layout="@layout/fragment_import_chat" />
+        tools:layout="@layout/fragment_import_chat" >
+        <action
+            android:id="@+id/action_importChat_to_chatStats"
+            app:destination="@id/chatStats" />
+    </fragment>
+    <fragment
+        android:id="@+id/chatStats"
+        android:name="com.android.chatanalyzer.ChatStats"
+        android:label="fragment_chat_stats"
+        tools:layout="@layout/fragment_chat_stats" />
 </navigation>
