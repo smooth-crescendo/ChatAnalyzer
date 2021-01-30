@@ -16,9 +16,6 @@ import com.android.chatanalyzer.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
 
-    private val PICK_CHAT_JSON_FILE = 2
-    private val REQUEST_READ_EXTERNAL_STORAGE = 3
-
     private lateinit var jsonReader: JsonReader
     private lateinit var binding: ActivityMainBinding
 
@@ -126,5 +123,10 @@ class MainActivity : AppCompatActivity() {
                 binding.readAllMessageKeysButton.visibility = View.VISIBLE
             }
         }
+    }
+
+    companion object {
+        const val PICK_CHAT_JSON_FILE = 2
+        const val REQUEST_READ_EXTERNAL_STORAGE = 3
     }
 }
