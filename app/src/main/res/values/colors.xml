@@ -8,6 +8,9 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="grey_300">#FFE0E0E0</color>
+    <color name="grey_850">#FF303030</color>
+    <color name="grey_900">#FF212121</color>
+    <color name="grey_950">#FF121212</color>
     <color name="heading_black">#FF263238</color>
     <color name="subheading_black">#FF979797</color>
 </resources>
