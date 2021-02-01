@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import com.android.chatanalyzer.R
@@ -34,6 +35,24 @@ class ChatStatsFragment : Fragment() {
         model.chat?.let {
             binding.chatTitle.text = getString(R.string.chat_title, it.user)
             binding.chatSubtitle.text = getString(R.string.chat_subtitle, it.with_user, "Telegram")
+
+            var hours = mutableMapOf<Int, Int>()
+            for (h in 0..24) {
+                hours = hours.plus(Pair(h, 0)).toMutableMap()
+            }
+            for (message in model.chat!!.messages) {
+                val hour = message.date.hour
+                hours[hour] = hours[hour]!! + 1
+            }
+            var max = 0
+            var max_key = 0
+            for (h in hours) {
+                if (h.value > max) {
+                    max = h.value
+                    max_key = h.key
+                }
+            }
+            Toast.makeText(context, max_key.toString(), Toast.LENGTH_SHORT).show()
         }
 
         return view

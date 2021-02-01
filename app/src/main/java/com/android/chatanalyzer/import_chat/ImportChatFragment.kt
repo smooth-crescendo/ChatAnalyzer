@@ -53,41 +53,6 @@ class ImportChatFragment : Fragment() {
 
         binding.importChatButton.setOnClickListener {
             requestUserOpenJsonFile()
-
-            binding.allMessageKeys.visibility = View.GONE
-            binding.readAllMessageKeysButton.visibility = View.GONE
-            binding.readAllMessageKeysButton.isEnabled = true
-            binding.analyzeChatButton.visibility = View.GONE
-        }
-
-        binding.readAllMessageKeysButton.setOnClickListener {
-            model.chat = viewModel.readChat()
-            var hours = mutableMapOf<Int, Int>()
-            for (h in 0..24) {
-                hours = hours.plus(Pair(h, 0)).toMutableMap()
-            }
-            for (message in model.chat!!.messages) {
-                val hour = message.date.hour
-                hours[hour] = hours[hour]!! + 1
-            }
-            var max = 0
-            var max_key = 0
-            for (h in hours) {
-                if (h.value > max) {
-                    max = h.value
-                    max_key = h.key
-                }
-            }
-            Toast.makeText(context, max_key.toString(), Toast.LENGTH_SHORT).show()
-
-            binding.readAllMessageKeysButton.isEnabled = false
-
-            val editedMessagesPercentage =
-                ((viewModel.editedMessages.toDouble() / viewModel.totalMessages.toDouble()) * 100)
-
-            binding.allMessageKeys.text =
-                "%d/%d (%.2f%%)".format(viewModel.editedMessages, viewModel.totalMessages, editedMessagesPercentage)
-            binding.allMessageKeys.visibility = View.VISIBLE
         }
 
         binding.analyzeChatButton.setOnClickListener {
@@ -122,9 +87,9 @@ class ImportChatFragment : Fragment() {
 
                 viewModel.openNewChat(JsonReader(reader))
 
-                binding.analyzeChatButton.visibility = View.VISIBLE
+                model.chat = viewModel.readChat()
 
-                binding.readAllMessageKeysButton.visibility = View.VISIBLE
+                binding.analyzeChatButton.visibility = View.VISIBLE
             }
         }
     }

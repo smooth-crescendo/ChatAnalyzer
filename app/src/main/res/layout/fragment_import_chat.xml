@@ -17,21 +17,6 @@
         android:text="Import chat" />
 
     <Button
-        android:id="@+id/read_all_message_keys_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:text="Edited messages amount"
-        android:visibility="gone" />
-
-    <TextView
-        android:id="@+id/all_message_keys"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:visibility="gone" />
-
-    <Button
         android:id="@+id/analyze_chat_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

@@ -16,16 +16,11 @@ class ImportChatViewModel : ViewModel() {
 
     var reader: JsonReader? = null
 
-    var editedMessages = 0
-    var totalMessages = 0
-
     /**
      * opens new chat associated with this jsonReader
      */
     fun openNewChat(jsonReader: JsonReader) {
         reader = jsonReader
-        editedMessages = 0
-        totalMessages = 0
     }
 
     /**
@@ -47,7 +42,6 @@ class ImportChatViewModel : ViewModel() {
                         it.beginArray()
                         while (it.hasNext()) {
                             it.beginObject()
-                            totalMessages++
                             var from_id: Long = 0
                             lateinit var date: LocalDateTime
                             var message: String = ""
@@ -61,10 +55,6 @@ class ImportChatViewModel : ViewModel() {
                                                 it.nextString() + "Z"
                                             ), ZoneOffset.UTC
                                         )
-                                    }
-                                    "edited" -> {
-                                        it.skipValue()
-                                        editedMessages++
                                     }
                                     "text" -> {
                                         if (it.peek() == JsonToken.BEGIN_ARRAY) {
