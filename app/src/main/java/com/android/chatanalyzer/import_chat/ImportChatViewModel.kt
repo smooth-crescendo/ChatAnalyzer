@@ -1,8 +1,16 @@
 package com.android.chatanalyzer.import_chat
 
+import android.os.Build
 import android.util.JsonReader
+import android.util.JsonToken
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import com.android.chatanalyzer.chat.Chat
+import com.android.chatanalyzer.chat.Message
+import java.time.*
+import java.time.format.DateTimeFormatter
+import java.time.format.TextStyle
+import java.util.*
 
 class ImportChatViewModel : ViewModel() {
 
@@ -30,6 +38,8 @@ class ImportChatViewModel : ViewModel() {
         reader!!.let {
             var users = setOf<String>()
 
+            val messages = arrayListOf<Message>()
+
             it.beginObject()
             while (it.hasNext()) {
                 when (it.nextName()) {
@@ -38,20 +48,36 @@ class ImportChatViewModel : ViewModel() {
                         while (it.hasNext()) {
                             it.beginObject()
                             totalMessages++
+                            var from_id: Long = 0
+                            lateinit var date: LocalDateTime
+                            var message: String = ""
                             while (it.hasNext()) {
                                 when (it.nextName()) {
                                     "from" -> users = users.plus(it.nextString())
-                                    "from_id" -> {
-                                        val id = it.nextLong()
+                                    "from_id" -> from_id = it.nextLong()
+                                    "date" -> {
+                                        date = LocalDateTime.ofInstant(
+                                            Instant.parse(
+                                                it.nextString() + "Z"
+                                            ), ZoneOffset.UTC
+                                        )
                                     }
                                     "edited" -> {
                                         it.skipValue()
                                         editedMessages++
                                     }
+                                    "text" -> {
+                                        if (it.peek() == JsonToken.BEGIN_ARRAY) {
+                                            it.skipValue()
+                                        } else {
+                                            message = it.nextString()
+                                        }
+                                    }
                                     else -> it.skipValue()
                                 }
                             }
                             it.endObject()
+                            messages.add(Message(from_id, date, message))
                         }
                         it.endArray()
                     }
@@ -60,7 +86,7 @@ class ImportChatViewModel : ViewModel() {
             }
             it.endObject()
 
-            return Chat(users.elementAt(0), users.elementAt(1))
+            return Chat(users.elementAt(0), users.elementAt(1), messages)
         }
     }
 }
