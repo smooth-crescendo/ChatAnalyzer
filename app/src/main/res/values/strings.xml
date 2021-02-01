@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">ChatAnalyzer</string>
+    <string name="chat_title">Чат %s</string>
+    <string name="chat_subtitle">С %s (%s)</string>
 </resources>

@@ -5,14 +5,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="16dp"
-    tools:context=".ChatStats">
+    tools:context=".chat_stats.ChatStatsFragment">
 
     <TextView
-        android:id="@+id/chat_author"
+        android:id="@+id/chat_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingBottom="8dp"
-        android:text="Чат Mary Sargsyan"
+        android:text="@string/chat_title"
         android:textColor="@color/heading_black"
         android:textSize="24sp"
         android:textStyle="bold"
@@ -23,11 +23,11 @@
         android:id="@+id/chat_subtitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="С Любимый ❤ (Telegram)"
+        android:text="@string/chat_subtitle"
         android:textColor="@color/subheading_black"
         android:textSize="16sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/chat_author" />
+        app:layout_constraintTop_toBottomOf="@+id/chat_title" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

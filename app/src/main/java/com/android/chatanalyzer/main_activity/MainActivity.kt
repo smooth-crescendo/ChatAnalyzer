@@ -1,4 +1,4 @@
-package com.android.chatanalyzer
+package com.android.chatanalyzer.main_activity
 
 import android.Manifest.permission.READ_EXTERNAL_STORAGE
 import android.app.Activity

@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/importChat"
-        android:name="com.android.chatanalyzer.ImportChat"
+        android:name="com.android.chatanalyzer.import_chat.ImportChatFragment"
         android:label="fragment_import_chat"
         tools:layout="@layout/fragment_import_chat" >
         <action
@@ -16,7 +16,7 @@
     </fragment>
     <fragment
         android:id="@+id/chatStats"
-        android:name="com.android.chatanalyzer.ChatStats"
+        android:name="com.android.chatanalyzer.chat_stats.ChatStatsFragment"
         android:label="fragment_chat_stats"
         tools:layout="@layout/fragment_chat_stats" />
 </navigation>
