@@ -10,13 +10,11 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
 import com.android.chatanalyzer.main_activity.ChatModel
-import com.android.chatanalyzer.chat.Chat
 import com.android.chatanalyzer.databinding.FragmentImportChatBinding
 
 class ImportChatFragment : Fragment() {
@@ -24,11 +22,7 @@ class ImportChatFragment : Fragment() {
     private val viewModel: ImportChatViewModel by viewModels()
     private val model: ChatModel by activityViewModels()
 
-    private lateinit var jsonReader: JsonReader
     private var _binding: FragmentImportChatBinding? = null
-
-    var editedMessages = 0
-    var totalMessages = 0
 
     private val binding get() = _binding!!
 
@@ -64,14 +58,14 @@ class ImportChatFragment : Fragment() {
         }
 
         binding.readAllMessageKeysButton.setOnClickListener {
-            model.chat = readChat()
+            model.chat = viewModel.readChat()
             binding.readAllMessageKeysButton.isEnabled = false
 
             val editedMessagesPercentage =
-                ((editedMessages.toDouble() / totalMessages.toDouble()) * 100)
+                ((viewModel.editedMessages.toDouble() / viewModel.totalMessages.toDouble()) * 100)
 
             binding.allMessageKeys.text =
-                "%d/%d (%.2f%%)".format(editedMessages, totalMessages, editedMessagesPercentage)
+                "%d/%d (%.2f%%)".format(viewModel.editedMessages, viewModel.totalMessages, editedMessagesPercentage)
             binding.allMessageKeys.visibility = View.VISIBLE
         }
 
@@ -91,46 +85,6 @@ class ImportChatFragment : Fragment() {
         startActivityForResult(intent, PICK_CHAT_JSON_FILE)
     }
 
-    /**
-     * reads a json representation of a chat (works only with telegram chats by now)
-     * @return Chat
-     */
-    private fun readChat(): Chat {
-        var users = setOf<String>()
-
-        jsonReader.beginObject()
-        while (jsonReader.hasNext()) {
-            when (jsonReader.nextName()) {
-                "messages" -> {
-                    jsonReader.beginArray()
-                    while (jsonReader.hasNext()) {
-                        jsonReader.beginObject()
-                        totalMessages++
-                        while (jsonReader.hasNext()) {
-                            when (jsonReader.nextName()) {
-                                "from" -> users = users.plus(jsonReader.nextString())
-                                "from_id" -> {
-                                    val id = jsonReader.nextLong()
-                                }
-                                "edited" -> {
-                                    jsonReader.skipValue()
-                                    editedMessages++
-                                }
-                                else -> jsonReader.skipValue()
-                            }
-                        }
-                        jsonReader.endObject()
-                    }
-                    jsonReader.endArray()
-                }
-                else -> jsonReader.skipValue()
-            }
-        }
-        jsonReader.endObject()
-
-        return Chat(users.elementAt(0), users.elementAt(1))
-    }
-
     override fun onActivityResult(
         requestCode: Int, resultCode: Int, resultData: Intent?
     ) {
@@ -144,10 +98,8 @@ class ImportChatFragment : Fragment() {
                 val contentResolver = requireContext().contentResolver
                 val inputStream = contentResolver.openInputStream(uri)
                 val reader = inputStream?.reader()
-                jsonReader = JsonReader(reader)
 
-                editedMessages = 0
-                totalMessages = 0
+                viewModel.openNewChat(JsonReader(reader))
 
                 binding.importedChatType.text = "Telegram chat"
                 binding.importedChatType.visibility = View.VISIBLE
