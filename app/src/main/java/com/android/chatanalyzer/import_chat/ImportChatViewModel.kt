@@ -1,20 +1,36 @@
 package com.android.chatanalyzer.import_chat
 
-import android.os.Build
 import android.util.JsonReader
 import android.util.JsonToken
-import androidx.annotation.RequiresApi
+import android.view.View.GONE
+import android.view.View.VISIBLE
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import com.android.chatanalyzer.chat.Chat
 import com.android.chatanalyzer.chat.Message
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.time.*
-import java.time.format.DateTimeFormatter
-import java.time.format.TextStyle
-import java.util.*
 
 class ImportChatViewModel : ViewModel() {
 
-    var reader: JsonReader? = null
+    private var reader: JsonReader? = null
+
+    private val isReadyToRead get() = reader != null
+
+    private val isLoading = MutableLiveData(false)
+    val progressViewsVisibility: LiveData<Int> = Transformations.map(isLoading) {
+        if (it) VISIBLE else GONE
+    }
+
+    private val _chat = MutableLiveData<Chat?>(null)
+    val chat: LiveData<Chat?> get() = _chat
+
+    val loadedViewsVisibility: LiveData<Int> = Transformations.map(chat) {
+        if (it == null) GONE else VISIBLE
+    }
 
     /**
      * opens new chat associated with this jsonReader
@@ -27,56 +43,65 @@ class ImportChatViewModel : ViewModel() {
      * reads a json representation of a chat (works only with telegram chats by now)
      * @return Chat
      */
-    fun readChat(): Chat {
-        if (reader == null)
-            throw NullPointerException("Open file with chat first - 'openNewChat(jsonReader'")
+    fun readChat() {
+        if (!isReadyToRead)
+            throw NullPointerException("Open file with chat first - 'openNewChat(jsonReader)'")
         reader!!.let {
-            var users = setOf<String>()
 
-            val messages = arrayListOf<Message>()
+            _chat.value = null
+            isLoading.value = true
 
-            it.beginObject()
-            while (it.hasNext()) {
-                when (it.nextName()) {
-                    "messages" -> {
-                        it.beginArray()
-                        while (it.hasNext()) {
-                            it.beginObject()
-                            var from_id: Long = 0
-                            lateinit var date: LocalDateTime
-                            var message: String = ""
+            GlobalScope.launch {
+                var users = setOf<String>()
+
+                val messages = arrayListOf<Message>()
+
+                it.beginObject()
+                while (it.hasNext()) {
+                    when (it.nextName()) {
+                        "messages" -> {
+                            it.beginArray()
                             while (it.hasNext()) {
-                                when (it.nextName()) {
-                                    "from" -> users = users.plus(it.nextString())
-                                    "from_id" -> from_id = it.nextLong()
-                                    "date" -> {
-                                        date = LocalDateTime.ofInstant(
-                                            Instant.parse(
-                                                it.nextString() + "Z"
-                                            ), ZoneOffset.UTC
-                                        )
-                                    }
-                                    "text" -> {
-                                        if (it.peek() == JsonToken.BEGIN_ARRAY) {
-                                            it.skipValue()
-                                        } else {
-                                            message = it.nextString()
+                                it.beginObject()
+                                var from_id: Long = 0
+                                lateinit var date: LocalDateTime
+                                var message: String = ""
+                                while (it.hasNext()) {
+                                    when (it.nextName()) {
+                                        "from" -> users = users.plus(it.nextString())
+                                        "from_id" -> from_id = it.nextLong()
+                                        "date" -> {
+                                            date = LocalDateTime.ofInstant(
+                                                Instant.parse(
+                                                    it.nextString() + "Z"
+                                                ), ZoneOffset.UTC
+                                            )
                                         }
+                                        "text" -> {
+                                            if (it.peek() == JsonToken.BEGIN_ARRAY) {
+                                                it.skipValue()
+                                            } else {
+                                                message = it.nextString()
+                                            }
+                                        }
+                                        else -> it.skipValue()
                                     }
-                                    else -> it.skipValue()
                                 }
+                                it.endObject()
+                                messages.add(Message(from_id, date, message))
                             }
-                            it.endObject()
-                            messages.add(Message(from_id, date, message))
+                            it.endArray()
                         }
-                        it.endArray()
+                        else -> it.skipValue()
                     }
-                    else -> it.skipValue()
                 }
-            }
-            it.endObject()
+                it.endObject()
 
-            return Chat(users.elementAt(0), users.elementAt(1), messages)
+                reader = null
+
+                _chat.postValue(Chat(users.elementAt(0), users.elementAt(1), messages))
+                isLoading.postValue(false)
+            }
         }
     }
 }

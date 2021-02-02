@@ -1,27 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:gravity="center"
-    android:orientation="vertical"
-    android:padding="16dp"
-    tools:context=".import_chat.ImportChatFragment">
+<layout>
 
-    <Button
-        android:id="@+id/import_chat_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:text="Import chat" />
+    <data>
 
-    <Button
-        android:id="@+id/analyze_chat_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Analyze chat"
-        android:layout_margin="8dp"
-        android:visibility="gone" />
+        <import type="android.view.View" />
 
-</LinearLayout>
+        <variable
+            name="importChatViewModel"
+            type="com.android.chatanalyzer.import_chat.ImportChatViewModel" />
+    </data>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="16dp"
+        tools:context=".import_chat.ImportChatFragment">
+
+        <Button
+            android:id="@+id/import_chat_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:text="Import chat"/>
+
+        <ProgressBar
+            android:id="@+id/import_chat_progress_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="@{importChatViewModel.progressViewsVisibility}" />
+
+        <Button
+            android:id="@+id/analyze_chat_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:text="Analyze chat"
+            android:visibility="@{importChatViewModel.loadedViewsVisibility}" />
+
+    </LinearLayout>
+</layout>

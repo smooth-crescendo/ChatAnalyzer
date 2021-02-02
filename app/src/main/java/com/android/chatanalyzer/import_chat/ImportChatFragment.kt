@@ -4,22 +4,18 @@ import android.Manifest
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.os.Build
 import android.os.Bundle
 import android.util.JsonReader
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
 import com.android.chatanalyzer.main_activity.ChatModel
 import com.android.chatanalyzer.databinding.FragmentImportChatBinding
-import java.util.*
 
 class ImportChatFragment : Fragment() {
 
@@ -51,14 +47,19 @@ class ImportChatFragment : Fragment() {
         _binding = FragmentImportChatBinding.inflate(inflater, container, false)
         val view = binding.root
 
+        binding.importChatViewModel = viewModel
+        binding.lifecycleOwner = viewLifecycleOwner
+
         binding.importChatButton.setOnClickListener {
             requestUserOpenJsonFile()
         }
 
         binding.analyzeChatButton.setOnClickListener {
+            model.chat = viewModel.chat.value
             val action = ImportChatFragmentDirections.actionImportChatToChatStats()
             binding.root.findNavController().navigate(action)
         }
+
 
         return view
     }
@@ -86,10 +87,7 @@ class ImportChatFragment : Fragment() {
                 val reader = inputStream?.reader()
 
                 viewModel.openNewChat(JsonReader(reader))
-
-                model.chat = viewModel.readChat()
-
-                binding.analyzeChatButton.visibility = View.VISIBLE
+                viewModel.readChat()
             }
         }
     }
