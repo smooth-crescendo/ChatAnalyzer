@@ -2,9 +2,6 @@
 <layout>
 
     <data>
-
-        <import type="android.view.View" />
-
         <variable
             name="importChatViewModel"
             type="com.android.chatanalyzer.import_chat.ImportChatViewModel" />
