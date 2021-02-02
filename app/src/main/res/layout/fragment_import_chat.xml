@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout>
-
     <data>
+        <import type="android.view.View" />
+
         <variable
             name="importChatViewModel"
             type="com.android.chatanalyzer.import_chat.ImportChatViewModel" />
@@ -22,7 +23,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
-            android:text="Import chat" />
+            android:text="Import chat"/>
 
         <ProgressBar
             android:id="@+id/import_chat_progress_bar"
