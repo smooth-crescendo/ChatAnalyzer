@@ -1,11 +1,10 @@
 package com.android.chatanalyzer.chat_stats
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import com.android.chatanalyzer.R
@@ -17,19 +16,13 @@ class ChatStatsFragment : Fragment() {
     private val viewModel: ChatStatsViewModel by viewModels()
     private val model: ChatModel by activityViewModels()
 
-    private var _binding: FragmentChatStatsBinding? = null
-    private val binding get() = _binding!!
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
+    private lateinit var binding: FragmentChatStatsBinding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
-        _binding = FragmentChatStatsBinding.inflate(layoutInflater, container, false)
+        binding = FragmentChatStatsBinding.inflate(inflater, container, false)
         val view = binding.root
 
         model.chat?.let {
@@ -54,7 +47,6 @@ class ChatStatsFragment : Fragment() {
             }
             Toast.makeText(context, max_key.toString(), Toast.LENGTH_SHORT).show()
         }
-
         return view
     }
 }

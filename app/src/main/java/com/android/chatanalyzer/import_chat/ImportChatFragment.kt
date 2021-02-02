@@ -6,28 +6,33 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.JsonReader
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
-import com.android.chatanalyzer.main_activity.ChatModel
 import com.android.chatanalyzer.databinding.FragmentImportChatBinding
+import com.android.chatanalyzer.main_activity.ChatModel
 
 class ImportChatFragment : Fragment() {
 
     private val viewModel: ImportChatViewModel by viewModels()
     private val model: ChatModel by activityViewModels()
 
-    private var _binding: FragmentImportChatBinding? = null
+    private lateinit var binding: FragmentImportChatBinding
 
-    private val binding get() = _binding!!
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        binding = FragmentImportChatBinding.inflate(inflater, container, false)
+        val view = binding.root
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+        binding.importChatViewModel = viewModel
+        binding.lifecycleOwner = viewLifecycleOwner
 
         val isPermissionGranted = ContextCompat.checkSelfPermission(
             requireContext(), Manifest.permission.READ_EXTERNAL_STORAGE
@@ -38,17 +43,6 @@ class ImportChatFragment : Fragment() {
                 REQUEST_READ_EXTERNAL_STORAGE
             )
         }
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        _binding = FragmentImportChatBinding.inflate(inflater, container, false)
-        val view = binding.root
-
-        binding.importChatViewModel = viewModel
-        binding.lifecycleOwner = viewLifecycleOwner
 
         binding.importChatButton.setOnClickListener {
             requestUserOpenJsonFile()
@@ -57,9 +51,8 @@ class ImportChatFragment : Fragment() {
         binding.analyzeChatButton.setOnClickListener {
             model.chat = viewModel.chat.value
             val action = ImportChatFragmentDirections.actionImportChatToChatStats()
-            binding.root.findNavController().navigate(action)
+            view.findNavController().navigate(action)
         }
-
 
         return view
     }
@@ -90,11 +83,6 @@ class ImportChatFragment : Fragment() {
                 viewModel.readChat()
             }
         }
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 
     companion object {
