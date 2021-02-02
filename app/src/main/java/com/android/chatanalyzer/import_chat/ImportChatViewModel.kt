@@ -18,8 +18,6 @@ class ImportChatViewModel : ViewModel() {
 
     private var reader: JsonReader? = null
 
-    private val isReadyToRead get() = reader != null
-
     private val _isLoading = MutableLiveData(false)
     val isLoading: LiveData<Boolean> get() = _isLoading
 
@@ -38,7 +36,7 @@ class ImportChatViewModel : ViewModel() {
      * @return Chat
      */
     fun readChat() {
-        if (!isReadyToRead)
+        if (reader == null)
             throw NullPointerException("Open file with chat first - 'openNewChat(jsonReader)'")
         reader!!.let {
 
