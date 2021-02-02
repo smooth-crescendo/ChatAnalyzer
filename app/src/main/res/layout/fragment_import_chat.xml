@@ -37,7 +37,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
             android:text="Analyze chat"
-            android:visibility="@{importChatViewModel.chat == null ? View.GONE : View.VISIBLE}" />
+            android:enabled="@{importChatViewModel.chat != null}" />
 
     </LinearLayout>
 </layout>
