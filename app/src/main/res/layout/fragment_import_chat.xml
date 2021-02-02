@@ -25,13 +25,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
-            android:text="Import chat"/>
+            android:text="Import chat" />
 
         <ProgressBar
             android:id="@+id/import_chat_progress_bar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="@{importChatViewModel.progressViewsVisibility}" />
+            android:visibility="@{importChatViewModel.isLoading ? View.VISIBLE : View.GONE}" />
 
         <Button
             android:id="@+id/analyze_chat_button"
@@ -39,7 +39,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
             android:text="Analyze chat"
-            android:visibility="@{importChatViewModel.loadedViewsVisibility}" />
+            android:visibility="@{importChatViewModel.chat == null ? View.GONE : View.VISIBLE}" />
 
     </LinearLayout>
 </layout>

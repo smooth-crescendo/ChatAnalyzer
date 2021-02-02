@@ -20,17 +20,11 @@ class ImportChatViewModel : ViewModel() {
 
     private val isReadyToRead get() = reader != null
 
-    private val isLoading = MutableLiveData(false)
-    val progressViewsVisibility: LiveData<Int> = Transformations.map(isLoading) {
-        if (it) VISIBLE else GONE
-    }
+    private val _isLoading = MutableLiveData(false)
+    val isLoading: LiveData<Boolean> get() = _isLoading
 
     private val _chat = MutableLiveData<Chat?>(null)
     val chat: LiveData<Chat?> get() = _chat
-
-    val loadedViewsVisibility: LiveData<Int> = Transformations.map(chat) {
-        if (it == null) GONE else VISIBLE
-    }
 
     /**
      * opens new chat associated with this jsonReader
@@ -49,7 +43,7 @@ class ImportChatViewModel : ViewModel() {
         reader!!.let {
 
             _chat.value = null
-            isLoading.value = true
+            _isLoading.value = true
 
             GlobalScope.launch {
                 var users = setOf<String>()
@@ -100,7 +94,7 @@ class ImportChatViewModel : ViewModel() {
                 reader = null
 
                 _chat.postValue(Chat(users.elementAt(0), users.elementAt(1), messages))
-                isLoading.postValue(false)
+                _isLoading.postValue(false)
             }
         }
     }
