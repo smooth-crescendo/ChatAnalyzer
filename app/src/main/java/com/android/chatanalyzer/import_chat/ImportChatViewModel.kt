@@ -2,8 +2,6 @@ package com.android.chatanalyzer.import_chat
 
 import android.util.JsonReader
 import android.util.JsonToken
-import android.view.View.GONE
-import android.view.View.VISIBLE
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
@@ -12,7 +10,9 @@ import com.android.chatanalyzer.chat.Chat
 import com.android.chatanalyzer.chat.Message
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import java.time.*
+import java.time.Instant
+import java.time.LocalDateTime
+import java.time.ZoneOffset
 
 class ImportChatViewModel : ViewModel() {
 
@@ -23,6 +23,11 @@ class ImportChatViewModel : ViewModel() {
 
     private val _chat = MutableLiveData<Chat?>(null)
     val chat: LiveData<Chat?> get() = _chat
+
+    val messagesLoaded = MutableLiveData(0)
+    val messagesLoadedStr = Transformations.map(messagesLoaded) {
+        it.toString()
+    }
 
     /**
      * opens new chat associated with this jsonReader
@@ -43,6 +48,8 @@ class ImportChatViewModel : ViewModel() {
             _chat.value = null
             _isLoading.value = true
 
+            var _messagesLoaded = 0
+
             GlobalScope.launch {
                 var users = setOf<String>()
 
@@ -55,11 +62,13 @@ class ImportChatViewModel : ViewModel() {
                             it.beginArray()
                             while (it.hasNext()) {
                                 it.beginObject()
+                                var id: Long = 0
                                 var from_id: Long = 0
                                 lateinit var date: LocalDateTime
                                 var message: String = ""
                                 while (it.hasNext()) {
                                     when (it.nextName()) {
+                                        "id" -> id = it.nextLong()
                                         "from" -> users = users.plus(it.nextString())
                                         "from_id" -> from_id = it.nextLong()
                                         "date" -> {
@@ -80,7 +89,9 @@ class ImportChatViewModel : ViewModel() {
                                     }
                                 }
                                 it.endObject()
-                                messages.add(Message(from_id, date, message))
+                                messages.add(Message(id, date, message))
+                                _messagesLoaded++
+                                messagesLoaded.postValue(_messagesLoaded)
                             }
                             it.endArray()
                         }
@@ -91,7 +102,8 @@ class ImportChatViewModel : ViewModel() {
 
                 reader = null
 
-                _chat.postValue(Chat(users.elementAt(0), users.elementAt(1), messages))
+                Chat.create(users.elementAt(0), users.elementAt(1), messages)
+                _chat.postValue(Chat.get())
                 _isLoading.postValue(false)
             }
         }

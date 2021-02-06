@@ -11,16 +11,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
 import com.android.chatanalyzer.databinding.FragmentImportChatBinding
-import com.android.chatanalyzer.main_activity.ChatModel
 
 class ImportChatFragment : Fragment() {
 
     private val viewModel: ImportChatViewModel by viewModels()
-    private val model: ChatModel by activityViewModels()
 
     private lateinit var binding: FragmentImportChatBinding
 
@@ -49,7 +46,6 @@ class ImportChatFragment : Fragment() {
         }
 
         binding.analyzeChatButton.setOnClickListener {
-            model.chat = viewModel.chat.value
             val action = ImportChatFragmentDirections.actionImportChatToChatStats()
             view.findNavController().navigate(action)
         }
