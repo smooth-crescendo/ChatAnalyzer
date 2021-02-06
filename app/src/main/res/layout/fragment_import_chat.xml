@@ -39,5 +39,10 @@
             android:text="Analyze chat"
             android:enabled="@{importChatViewModel.chat != null}" />
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{importChatViewModel.messagesLoadedStr}"/>
+
     </LinearLayout>
 </layout>
