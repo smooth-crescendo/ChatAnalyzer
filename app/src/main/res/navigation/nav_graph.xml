@@ -18,5 +18,13 @@
         android:id="@+id/chatStats"
         android:name="com.android.chatanalyzer.chat_stats.ChatStatsFragment"
         android:label="fragment_chat_stats"
-        tools:layout="@layout/fragment_chat_stats" />
+        tools:layout="@layout/fragment_chat_stats" >
+        <action
+            android:id="@+id/action_chatStats_to_wordsUsageFragment"
+            app:destination="@id/wordsUsageFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/wordsUsageFragment"
+        android:name="com.android.chatanalyzer.words_usage.WordsUsageFragment"
+        android:label="WordsUsageFragment" />
 </navigation>

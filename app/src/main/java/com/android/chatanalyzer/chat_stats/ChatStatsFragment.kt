@@ -28,6 +28,12 @@ class ChatStatsFragment : Fragment() {
             binding.chatTitle.text = getString(R.string.chat_title, it.user)
             binding.chatSubtitle.text = getString(R.string.chat_subtitle, it.withUser, "Telegram")
         }
+
+        binding.wordsUsageButton.setOnClickListener {
+            val action = ChatStatsFragmentDirections.actionChatStatsToWordsUsageFragment()
+            view.findNavController().navigate(action)
+        }
+
         return view
     }
 }
