@@ -24,8 +24,6 @@ class WordsUsageFragment : Fragment() {
         binding.wordsUsageViewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
-        viewModel.calculateTopMessages()
-
         return view
     }
 }

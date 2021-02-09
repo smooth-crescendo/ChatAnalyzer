@@ -1,9 +1,9 @@
 package com.android.chatanalyzer.chat
 
 class Chat private constructor(
-    var user: String,
-    var withUser: String,
-    var messages: ArrayList<Message>
+    val user: String,
+    val withUser: String,
+    val messages: ArrayList<Message>
 ) {
 
     companion object {
