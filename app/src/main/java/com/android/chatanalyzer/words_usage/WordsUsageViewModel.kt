@@ -39,9 +39,11 @@ class WordsUsageViewModel : ViewModel() {
             }
         }
 
-        val wordsUsageList = wordsUsage.toList()
+        val wordsUsageList = wordsUsage.toList().sortedByDescending {
+            it.second
+        }
         for (i in wordsUsageList.indices) {
-            topMessages.value!!.add("${i+1} - ${wordsUsageList[i].first} (${wordsUsageList[i].second})\n")
+            topMessages.value!!.add("${i + 1} - ${wordsUsageList[i].first} (${wordsUsageList[i].second})\n")
         }
     }
 }
